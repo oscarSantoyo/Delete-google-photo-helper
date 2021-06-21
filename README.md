@@ -1,0 +1,1 @@
+# Delete-google-photo-helper
