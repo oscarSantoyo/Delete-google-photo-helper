@@ -1,23 +1,18 @@
 (function() {
-  const msgPrefix = "Google Photos Delete Photo ShortCut: ";
+  const msgPrefix = "GooglePhotosDelete helper: ";
   console.log(msgPrefix + "start");
 
-  const a = [...document.getElementsByTagName("button")];
-  const button = a.filter(elem => elem.getAttribute("aria-label") == "Delete").pop()
-  console.log(button)
-
-  if (button == null) {
-    console.log(msgPrefix + "ERROR: didn't find delete button");
-    return null;
+  function getDeleteButton() {
+    const deleteBtn = [...document.getElementsByTagName("button")].filter(elem => elem.getAttribute("aria-label") == "Delete").pop()
+    return deleteBtn
   }
 
-  function clickMoveToBin() {
-    const spans = [...document.getElementsByTagName('span')]
-    const moveToBinBtn = spans.filter(span =>
-       span.innerHTML == 'Move to bin')
+  function getMoveToBinButton() {
+    const moveToBinBtn = [...document.getElementsByTagName('span')].filter(span =>
+        span.innerHTML == 'Move to bin')
       .pop()
       .offsetParent
-    simulateClick(moveToBinBtn)
+    return moveToBinBtn
   }
 
   function simulateClick(btn) {
@@ -37,8 +32,22 @@
   function doc_delete_key_up(e) {
     if (e.keyCode == 46) {
       console.log(msgPrefix + "simulating mouse click");
-      simulateClick(button)
-      setTimeout(clickMoveToBin, 1000)
+
+      const deleteBtn = getDeleteButton()
+      if (deleteBtn == null) {
+        console.log(msgPrefix + "ERROR: didn't find delete button");
+        return null;
+      }
+
+      simulateClick(deleteBtn)
+      setTimeout(() => {
+        const moveToBinBtn = getMoveToBinButton()
+        if (moveToBinBtn == null) {
+          console.log(msgPrefix + "ERROR: didn't find delete button");
+          return null;
+        }
+        simulateClick(moveToBinBtn)
+      }, 1000)
     }
   }
   document.addEventListener('keyup', doc_delete_key_up, false);
